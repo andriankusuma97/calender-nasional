@@ -101,19 +101,21 @@ export default function FinanceCalendar() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white rounded-xl shadow-lg relative">
+    <div className="max-w-4xl mx-auto p-3 sm:p-4 bg-white rounded-xl shadow-lg relative">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold text-gray-800">{format(currentMonth, 'MMMM yyyy')}</h2>
-        <UserInfoClient />
-        <div className="flex gap-2">
-          <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2 border rounded-full hover:bg-gray-50"><ChevronLeft size={20}/></button>
-          <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2 border rounded-full hover:bg-gray-50"><ChevronRight size={20}/></button>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+        <h2 className="text-lg sm:text-2xl font-bold text-gray-800">{format(currentMonth, 'MMMM yyyy')}</h2>
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:block"><UserInfoClient /></div>
+          <div className="flex gap-2">
+            <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-1 sm:p-2 border rounded-full hover:bg-gray-50"><ChevronLeft size={18}/></button>
+            <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-1 sm:p-2 border rounded-full hover:bg-gray-50"><ChevronRight size={18}/></button>
+          </div>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 border-l border-t text-center">
+      <div className="grid grid-cols-7 border-l border-t text-center text-[11px] sm:text-sm">
         {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map((d, idx) => (
           <div
             key={d}
@@ -147,33 +149,40 @@ export default function FinanceCalendar() {
             <div 
               key={day.getTime()}
               onClick={() => { setSelectedDate(day); setShowModal(true); }}
-              className={`h-28 border-r border-b p-2 cursor-pointer transition-all hover:bg-blue-50 ${outerTextClass} ${isToday ? 'bg-gradient-to-br from-blue-50 to-white ring-2 ring-blue-300' : ''} ${isHoliday ? 'bg-red-50' : ''}`}
+              className={`h-20 sm:h-28 border-r border-b p-1 sm:p-2 cursor-pointer transition-all hover:bg-blue-50 ${outerTextClass} ${isToday ? 'bg-gradient-to-br from-blue-50 to-white ring-2 ring-blue-300' : ''} ${isHoliday ? 'bg-red-50' : ''} flex flex-col justify-between overflow-hidden`}
             >
-              <div className="flex items-center justify-between">
-                <div className={`text-left text-sm font-semibold ${isToday ? 'text-blue-800 font-extrabold' : ''}`}>
+              <div className="grid grid-cols-[auto_1fr] items-center gap-2 min-w-0">
+                <div className={`text-left text-sm font-semibold flex-none ${isToday ? 'text-blue-800 font-extrabold' : ''}`}>
                   <span className={
                     isToday
-                      ? 'inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-800'
-                      : (isHoliday || isSunday ? 'inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-100 text-red-700' : '')
+                      ? 'inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 text-blue-800 text-xs sm:text-sm relative z-10'
+                      : (isHoliday || isSunday ? 'inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-100 text-red-700 text-xs sm:text-sm relative z-10' : 'text-xs sm:text-sm relative z-10')
                   }>
                     {format(day, 'd')}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  {isToday && <div className="text-xs text-blue-600 font-medium">Hari ini</div>}
-                  {isHoliday && <div className="text-xs text-red-600 font-medium">{holiday?.name}</div>}
+
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 justify-end">
+                    {isToday && <div className="hidden sm:block text-xs text-blue-600 font-medium truncate whitespace-nowrap max-w-[80px]">Hari ini</div>}
+                    {isHoliday && (
+                      <div className="text-[10px] sm:text-xs text-red-600 font-medium truncate whitespace-nowrap max-w-[90px] sm:max-w-[110px]">
+                        {holiday?.name}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {total !== 0 && (
-                <div className={`mt-2 text-[10px] p-1 rounded font-bold truncate ${total > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                <div className={`mt-2 text-[10px] p-1 rounded font-bold truncate overflow-hidden whitespace-nowrap ${total > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                   Rp {Math.abs(total).toLocaleString('id-ID')}
                 </div>
               )}
             </div>
           );
         })}
-      </div>
+       </div>
 
       {/* Keterangan hari libur yang tampil pada bulan ini */}
       {visibleHolidays.length > 0 && (
@@ -191,8 +200,8 @@ export default function FinanceCalendar() {
 
       {/* Modal Form */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="bg-white rounded-t-xl sm:rounded-xl p-4 sm:p-6 w-full h-[85vh] sm:h-auto max-w-md shadow-2xl overflow-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Tambah Transaksi - {selectedDate && format(selectedDate, 'dd MMM yyyy')}</h3>
               <button onClick={() => setShowModal(false)}><X size={20}/></button>
