@@ -183,7 +183,7 @@ export default function FinanceDashboard() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg sm:text-xl font-semibold">Dashboard</h1>
         <div className="hidden sm:block">
-          <UserInfoClient />
+          <UserInfoClient transactions={transactions} />
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { format, isSameMonth } from "date-fns";
+import RecapModal from "./RecapModal";
 
 export interface Transaction {
   id: string;
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export default function TransactionListSidebar({ transactions, currentMonth }: Props) {
+  const [openRecap, setOpenRecap] = useState(false);
+
   const monthTransactions = useMemo(
     () => transactions.filter((t) => isSameMonth(new Date(t.date), currentMonth)),
     [transactions, currentMonth]
@@ -24,7 +27,6 @@ export default function TransactionListSidebar({ transactions, currentMonth }: P
 
   const monthTotal = monthTransactions.reduce((acc, t) => acc + t.amount, 0);
 
-  // group by date (yyyy-MM-dd)
   const grouped = monthTransactions.reduce<Record<string, Transaction[]>>((acc, t) => {
     const key = format(new Date(t.date), "yyyy-MM-dd");
     acc[key] = acc[key] || [];
@@ -38,8 +40,14 @@ export default function TransactionListSidebar({ transactions, currentMonth }: P
     <aside className="w-full border-l pl-4">
       <div className="sticky top-4 bg-white pb-4">
         <h3 className="text-md font-semibold mb-1">{format(currentMonth, "MMMM yyyy")}</h3>
-        <div className="text-sm font-bold text-gray-700 mb-3">
-          Total: <span className={monthTotal >= 0 ? "text-green-700" : "text-red-700"}>Rp {Math.abs(monthTotal).toLocaleString("id-ID")}{monthTotal > 0 ? "" : monthTotal < 0 ? "" : ""}</span>
+        <div className="text-xl font-bold text-gray-700 mb-3">
+          Total: <span className={monthTotal >= 0 ? "text-green-700" : "text-red-700"}>Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
+        </div>
+
+        <div className="mb-3">
+          <button onClick={() => setOpenRecap(true)} className="w-full py-2 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+            Lihat Rekap Bulanan
+          </button>
         </div>
       </div>
 
@@ -70,6 +78,8 @@ export default function TransactionListSidebar({ transactions, currentMonth }: P
           })
         )}
       </div>
+
+      <RecapModal open={openRecap} onClose={() => setOpenRecap(false)} transactions={transactions} currentMonth={currentMonth} />
     </aside>
   );
 }
