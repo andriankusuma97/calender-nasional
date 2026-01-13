@@ -169,7 +169,7 @@ export default function FinanceDashboard() {
   };
 
   return (
-    <div className="w-full md:w-[80%] h-screen hide-scrollbar mx-auto p-3 sm:p-6 rounded-2xl shadow-2xl relative ring-1 ring-indigo-100 overflow-hidden flex flex-col">
+    <div className="w-full md:w-[80%] h-screen hide-scrollbar mx-auto p-6 pb-8 rounded-2xl shadow-2xl relative ring-1 ring-indigo-100 overflow-hidden flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-pink-600 to-yellow-600">
           Dashboard

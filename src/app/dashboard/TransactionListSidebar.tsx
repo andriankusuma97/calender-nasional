@@ -41,12 +41,12 @@ export default function TransactionListSidebar({ transactions = [], currentMonth
   const displayMonth = currentMonth ?? new Date();
 
   return (
-    <aside className="w-full max-h-screen border-l pl-4">
+    <aside className="w-full max-h-screen sm:border-l sm:pl-4  pb-6">
       <div className=" bg-white pb-4">
         <div className="p-3 rounded-md   shadow-sm mb-3">
           <h3 className="text-md font-semibold mb-0">{format(displayMonth, "MMMM yyyy")}</h3>
           <div className="md:text-xl sm:text-md font-bold mt-1">
-            Total: <span className={monthTotal >= 0 ? "text-green-600" : "text-red-300"}>{monthTotal > 0 ? "+" : ""}Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
+            Total: <span className={monthTotal >= 0 ? "text-green-600" : "text-red-600"}>{monthTotal > 0 ? "+" : ""}Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
           </div>
         </div>
 
