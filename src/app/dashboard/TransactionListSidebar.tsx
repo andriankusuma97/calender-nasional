@@ -14,16 +14,16 @@ export interface Transaction {
 
 interface Props {
   transactions: Transaction[];
-  currentMonth: Date;
+  currentMonth: Date | null; // allow null to avoid TS error
 }
 
 export default function TransactionListSidebar({ transactions = [], currentMonth }: Props) {
   const [openRecap, setOpenRecap] = useState(false);
 
-  const monthTransactions = useMemo(
-    () => transactions.filter((t) => isSameMonth(new Date(t.date), currentMonth)),
-    [transactions, currentMonth]
-  );
+  const monthTransactions = useMemo(() => {
+    if (!currentMonth) return [];
+    return transactions.filter((t) => isSameMonth(new Date(t.date), currentMonth));
+  }, [transactions, currentMonth]);
 
   const monthTotal = monthTransactions.reduce((acc, t) => acc + t.amount, 0);
 
@@ -38,10 +38,12 @@ export default function TransactionListSidebar({ transactions = [], currentMonth
 
   const sortedDates = useMemo(() => Object.keys(grouped).sort((a, b) => a.localeCompare(b)), [grouped]);
 
+  const displayMonth = currentMonth ?? new Date();
+
   return (
     <aside className="w-full border-l pl-4">
       <div className="sticky top-4 bg-white pb-4">
-        <h3 className="text-md font-semibold mb-1">{format(currentMonth, "MMMM yyyy")}</h3>
+        <h3 className="text-md font-semibold mb-1">{format(displayMonth, "MMMM yyyy")}</h3>
         <div className="text-sm font-bold text-gray-700 mb-3">
           Total: <span className={monthTotal >= 0 ? "text-green-700" : "text-red-700"}>Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
         </div>
@@ -81,7 +83,7 @@ export default function TransactionListSidebar({ transactions = [], currentMonth
         )}
       </div>
 
-      <RecapModal open={openRecap} onClose={() => setOpenRecap(false)} transactions={transactions} currentMonth={currentMonth} />
+      <RecapModal open={openRecap} onClose={() => setOpenRecap(false)} transactions={transactions} currentMonth={displayMonth} />
     </aside>
   );
 }

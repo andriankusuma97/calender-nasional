@@ -160,7 +160,10 @@ export default function FinanceDashboard() {
   };
 
   const getDayData = (day: Date | null) => {
-    const dayTrans = transactions.filter((t) => isSameDay(t.date, day));
+    if (!day) {
+      return { dayTrans: [] as Transaction[], total: 0 };
+    }
+    const dayTrans = transactions.filter((t) => isSameDay(new Date(t.date), day));
     const total = dayTrans.reduce((acc, curr) => acc + curr.amount, 0);
     return { dayTrans, total };
   };
