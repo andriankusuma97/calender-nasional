@@ -41,15 +41,17 @@ export default function TransactionListSidebar({ transactions = [], currentMonth
   const displayMonth = currentMonth ?? new Date();
 
   return (
-    <aside className="w-full border-l pl-4">
-      <div className="sticky top-4 bg-white pb-4">
-        <h3 className="text-md font-semibold mb-1">{format(displayMonth, "MMMM yyyy")}</h3>
-        <div className="text-sm font-bold text-gray-700 mb-3">
-          Total: <span className={monthTotal >= 0 ? "text-green-700" : "text-red-700"}>Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
+    <aside className="w-full max-h-screen border-l pl-4">
+      <div className=" bg-white pb-4">
+        <div className="p-3 rounded-md   shadow-sm mb-3">
+          <h3 className="text-md font-semibold mb-0">{format(displayMonth, "MMMM yyyy")}</h3>
+          <div className="md:text-xl sm:text-md font-bold mt-1">
+            Total: <span className={monthTotal >= 0 ? "text-green-600" : "text-red-300"}>{monthTotal > 0 ? "+" : ""}Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
+          </div>
         </div>
 
         <div className="mb-3">
-          <button onClick={() => setOpenRecap(true)} className="w-full py-2 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+          <button onClick={() => setOpenRecap(true)} className="w-full py-2 px-3 rounded-md bg-sky-700 text-white font-semibold shadow hover:scale-[1.01] transition-transform">
             Lihat Rekap Bulanan
           </button>
         </div>

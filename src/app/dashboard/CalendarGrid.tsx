@@ -77,18 +77,22 @@ export default function CalendarGrid({
 
   return (
     <div
-      // attach handlers on wrapping div so the whole calendar is swipeable
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       className="select-none"
     >
-      <div className="grid grid-cols-7 border-l border-t text-center text-[11px] sm:text-sm">
+      <div className="grid grid-cols-7 text-center text-xs rounded-2xl md:gap-4 sm:gap-0">
         {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map((d, idx) => (
           <div
             key={d}
-            className={`py-2 border-r border-b bg-gray-50 text-xs font-bold uppercase ${idx === 0 ? "text-red-500" : "text-gray-500"}`}
+            className={`py-3  rounded-2xl font-semibold uppercase ${
+              idx === 0
+                ? " text-red-600"
+                
+                : "bg-gradient-to-r from-white to-slate-50 text-slate-600"
+            }`}
           >
             {d}
           </div>

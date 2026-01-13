@@ -169,58 +169,61 @@ export default function FinanceDashboard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-3 sm:p-4 bg-white rounded-xl shadow-lg relative">
+    <div className="w-full md:w-[80%] h-screen hide-scrollbar mx-auto p-3 sm:p-6 rounded-2xl shadow-2xl relative ring-1 ring-indigo-100 overflow-hidden flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg sm:text-xl font-semibold">Dashboard</h1>
-        <div className="sm:block">
+        <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-pink-600 to-yellow-600">
+          Dashboard
+        </h1>
+        <div className="sm:block flex items-center gap-2">
           <UserInfoClient transactions={transactions} />
         </div>
       </div>
 
-      <Header
-        currentMonth={currentMonth}
-        setCurrentMonth={setCurrentMonth}
-        formatMonth={(d: Date) => format(d, "MMMM yyyy")}
-      />
+      {/* content area: scrollable but scrollbar hidden */}
+      <div className="flex-1 overflow-auto [scrollbar-width:none]">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-4">
+          <div>
+            <Header
+              currentMonth={currentMonth}
+              setCurrentMonth={setCurrentMonth}
+              formatMonth={(d: Date) => format(d, "MMMM yyyy")}
+            />
+            <CalendarGrid
+              days={days}
+              currentMonth={currentMonth}
+              parsedHolidays={parsedHolidays}
+              setSelectedDate={(d: Date) => {
+                setSelectedDate(d);
+                setShowModal(true);
+              }}
+              getDayData={getDayData}
+              onPrevMonth={() => setCurrentMonth((m) => subMonths(m, 1))}
+              onNextMonth={() => setCurrentMonth((m) => addMonths(m, 1))}
+            />
 
-      {/* layout: calendar (left) + sidebar (right) */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-4">
-        <div>
-          <CalendarGrid
-            days={days}
-            currentMonth={currentMonth}
-            parsedHolidays={parsedHolidays}
-            setSelectedDate={(d: Date) => {
-              setSelectedDate(d);
-              setShowModal(true);
-            }}
-            getDayData={getDayData}
-            onPrevMonth={() => setCurrentMonth((m) => subMonths(m, 1))}
-            onNextMonth={() => setCurrentMonth((m) => addMonths(m, 1))}
-          />
+            {visibleHolidays.length > 0 && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg">
+                <h4 className="text-sm font-semibold text-red-700 mb-2">Hari Libur Nasional</h4>
+                <ul className="text-sm text-red-700 space-y-1">
+                  {visibleHolidays.map((h) => (
+                    <li key={h.date}>
+                      <span className="font-medium">{format(h.dateObj, "dd MMM yyyy")}</span> — {h.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-          {visibleHolidays.length > 0 && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg">
-              <h4 className="text-sm font-semibold text-red-700 mb-2">Hari Libur Nasional</h4>
-              <ul className="text-sm text-red-700 space-y-1">
-                {visibleHolidays.map((h) => (
-                  <li key={h.date}>
-                    <span className="font-medium">{format(h.dateObj, "dd MMM yyyy")}</span> — {h.name}
-                  </li>
-                ))}
-              </ul>
+            {/* mobile: tampilkan sidebar di bawah kalender & keterangan libur */}
+            <div className="block md:hidden mt-4">
+              <TransactionListSidebar transactions={transactions} currentMonth={currentMonth} />
             </div>
-          )}
+          </div>
 
-          {/* mobile: tampilkan sidebar di bawah kalender & keterangan libur */}
-          <div className="block md:hidden mt-4">
+          {/* desktop: sidebar di kanan */}
+          <div className="hidden md:block">
             <TransactionListSidebar transactions={transactions} currentMonth={currentMonth} />
           </div>
-        </div>
-
-        {/* desktop: sidebar di kanan */}
-        <div className="hidden md:block">
-          <TransactionListSidebar transactions={transactions} currentMonth={currentMonth} />
         </div>
       </div>
 

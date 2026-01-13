@@ -25,26 +25,26 @@ export default function CalendarCell({ day, currentMonth, holiday, setSelectedDa
   const isHoliday = Boolean(holiday);
 
   const outerTextClass = !isCurrentMonth
-    ? "bg-gray-50 text-gray-300"
+    ? "bg-gray-50 text-gray-300 border-gray-100"
     : isToday
-      ? "text-gray-700"
+      ? "text-gray-700 bg-gradient-to-br from-white to-blue-200 ring-2 ring-blue-300 border-gray-300"
       : isHoliday
-        ? "text-red-700"
+        ? "bg-red-100 text-red-700 border-gray-300"
         : isSunday
-          ? "text-red-700"
-          : "text-gray-700";
+          ? "text-red-700 bg-red-50 border-gray-300"
+          : "text-gray-700 border-gray-300";
 
   return (
     <div
       onClick={() => { setSelectedDate(day); }}
-      className={`h-20 sm:h-28 border-r border-b p-1 sm:p-2 cursor-pointer transition-all hover:bg-blue-50 ${outerTextClass} ${isToday ? "bg-gradient-to-br from-blue-50 to-white ring-2 ring-blue-300" : ""} ${isHoliday ? "bg-red-50" : ""} flex flex-col justify-between overflow-hidden`}
+      className={`h-15 sm:h-20  border   sm:border-2 rounded-xl p-1 sm:p-2 cursor-pointer transition-all hover:bg-blue-50 ${outerTextClass}  flex flex-col justify-between overflow-hidden`}
     >
       <div className="grid grid-cols-[auto_1fr] items-center gap-2 min-w-0">
         <div className={`text-left text-sm font-semibold flex-none ${isToday ? "text-blue-800 font-extrabold" : ""}`}>
           <span className={
             isToday
               ? "inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 text-blue-800 text-xs sm:text-sm relative z-10"
-              : (isHoliday || isSunday ? "inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-100 text-red-700 text-xs sm:text-sm relative z-10" : "text-xs sm:text-sm relative z-10")
+              : (!isCurrentMonth? "": isHoliday || isSunday ? "inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-100 text-red-700 text-xs sm:text-sm relative z-10" : "text-xs sm:text-sm relative z-10")
           }>
             {format(day, "d")}
           </span>
@@ -54,7 +54,7 @@ export default function CalendarCell({ day, currentMonth, holiday, setSelectedDa
           <div className="flex items-center gap-2 justify-end">
             {isToday && <div className="hidden sm:block text-xs text-blue-600 font-medium truncate whitespace-nowrap max-w-[80px]">Hari ini</div>}
             {isHoliday && (
-              <div className="text-[10px] sm:text-xs text-red-600 font-medium truncate whitespace-nowrap max-w-[90px] sm:max-w-[110px]">
+              <div className={`text-[10px] sm:text-xs ${outerTextClass} font-medium truncate whitespace-nowrap max-w-[90px] sm:max-w-[110px]`}>
                 {holiday?.name}
               </div>
             )}

@@ -90,14 +90,15 @@ export default function TransactionModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      {/* modal panel: slide up from bottom */}
+      {/* modal panel: slide up from bottom; use max-height so it never exceeds viewport */}
       <div
-        className={`bg-white rounded-t-xl sm:rounded-xl p-4 sm:p-6 w-full h-[85vh] sm:h-auto max-w-md shadow-2xl overflow-auto transform transition-transform duration-300 ease-out ${
+        className={`bg-white/95 rounded-t-xl sm:rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[85vh] sm:max-h-[75vh] shadow-2xl overflow-auto transform transition-transform duration-300 ease-out ${
           mounted ? "translate-y-0" : "translate-y-full"
         }`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold">
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-pink-500 to-yellow-400 shadow-sm" />
             {editingId ? "Edit Transaksi" : "Tambah Transaksi"} -{" "}
             {selectedDate && format(selectedDate, "dd MMM yyyy")}
           </h3>
@@ -188,7 +189,7 @@ export default function TransactionModal({
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
+            className="w-full py-3 rounded-lg font-bold text-white bg-gradient-to-r from-indigo-600 via-pink-600 to-yellow-500 hover:from-indigo-700 hover:to-yellow-600 transition-all shadow-md"
           >
             {editingId ? "Perbarui Transaksi" : "Simpan Transaksi"}
           </button>
@@ -197,11 +198,7 @@ export default function TransactionModal({
         {/* daftar budgeting / transaksi */}
         <div className="mt-6">
           <h4 className="text-sm font-semibold mb-2">Daftar Budgeting</h4>
-          <h4
-            className={`text-md font-semibold mb-2 ${
-              total > 0 ? "text-green-700" : "text-red-700"
-            } `}
-          >
+          <h4 className={`text-md font-semibold mb-2 ${total > 0 ? "text-green-700" : "text-red-700"}`}>
             Rp {Math.abs(total).toLocaleString("id-ID")}
           </h4>
           {filtered.length === 0 ? (
@@ -216,9 +213,7 @@ export default function TransactionModal({
                   className="flex items-center justify-between bg-gray-50 p-2 rounded-lg border"
                 >
                   <div className="min-w-0">
-                    <div className="text-sm font-medium truncate">
-                      {(t as any).title ?? t.category}
-                    </div>
+                    <div className="text-sm font-medium truncate">{(t as any).title ?? t.category}</div>
                     <div className="text-xs text-gray-500">
                       {t.category} • {format(new Date(t.date), "dd MMM yyyy HH:mm")}
                     </div>
@@ -237,7 +232,7 @@ export default function TransactionModal({
                     <button
                       type="button"
                       onClick={() => onRequestEdit && onRequestEdit(t.id)}
-                      className="p-1 rounded-md hover:bg-gray-100"
+                      className="p-1 rounded-md hover:bg-slate-100"
                       title="Edit"
                     >
                       <Edit2 size={16} />
@@ -246,7 +241,7 @@ export default function TransactionModal({
                     <button
                       type="button"
                       onClick={() => handleDelete(t.id)}
-                      className="p-1 rounded-md hover:bg-gray-100"
+                      className="p-1 rounded-md hover:bg-slate-100"
                       title="Hapus"
                     >
                       <Trash2 size={16} />
