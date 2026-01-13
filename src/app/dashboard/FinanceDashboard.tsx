@@ -1,19 +1,6 @@
 "use client";
 import React, { useMemo, useState, useEffect } from "react";
-import {
-  format,
-  addMonths,
-  subMonths,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-  parseISO,
-  startOfDay,
-  isSameDay,
-  isSameMonth,
-} from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, parseISO, startOfDay, isSameDay, isSameMonth, } from "date-fns";
 
 import Header from "./Header";
 import CalendarGrid from "./CalendarGrid";
@@ -172,7 +159,7 @@ export default function FinanceDashboard() {
     }
   };
 
-  const getDayData = (day: Date) => {
+  const getDayData = (day: Date | null) => {
     const dayTrans = transactions.filter((t) => isSameDay(t.date, day));
     const total = dayTrans.reduce((acc, curr) => acc + curr.amount, 0);
     return { dayTrans, total };
@@ -182,7 +169,7 @@ export default function FinanceDashboard() {
     <div className="max-w-6xl mx-auto p-3 sm:p-4 bg-white rounded-xl shadow-lg relative">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg sm:text-xl font-semibold">Dashboard</h1>
-        <div className="hidden sm:block">
+        <div className="sm:block">
           <UserInfoClient transactions={transactions} />
         </div>
       </div>
@@ -205,6 +192,8 @@ export default function FinanceDashboard() {
               setShowModal(true);
             }}
             getDayData={getDayData}
+            onPrevMonth={() => setCurrentMonth((m) => subMonths(m, 1))}
+            onNextMonth={() => setCurrentMonth((m) => addMonths(m, 1))}
           />
 
           {visibleHolidays.length > 0 && (
@@ -249,6 +238,9 @@ export default function FinanceDashboard() {
         onRequestEdit={handleRequestEdit}
         onDeleteTransaction={handleDeleteTransaction}
         editingId={editingId}
+        getDayData={getDayData}
+        
+
       />
     </div>
   );

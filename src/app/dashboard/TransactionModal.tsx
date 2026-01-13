@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { X, Edit2, Trash2 } from "lucide-react";
 import { format, isSameDay } from "date-fns";
 
@@ -30,6 +30,8 @@ interface Props {
   onRequestEdit?: (id: string) => void; // new: meminta parent isi form utk edit
   onDeleteTransaction?: (id: string) => void; // new: minta parent hapus
   editingId?: string | null; // optional: untuk menandai mode edit
+  getDayData: (d: Date | null) => { dayTrans: any[]; total: number };
+  // day: Date;
 }
 
 export default function TransactionModal({
@@ -49,8 +51,20 @@ export default function TransactionModal({
   onRequestEdit,
   onDeleteTransaction,
   editingId = null,
+  getDayData,
+  // day
 }: Props) {
   if (!showModal) return null;
+
+  // local mounted state to trigger slide-up animation on mount
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // small timeout ensures transition runs after mount
+    const t = setTimeout(() => setMounted(true), 10);
+    return () => clearTimeout(t);
+  }, []);
+
+  const { total } = getDayData(selectedDate);
 
   const filtered = selectedDate
     ? transactions.filter((t) => isSameDay(new Date(t.date), selectedDate))
@@ -76,13 +90,24 @@ export default function TransactionModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white rounded-t-xl sm:rounded-xl p-4 sm:p-6 w-full h-[85vh] sm:h-auto max-w-md shadow-2xl overflow-auto">
+      {/* modal panel: slide up from bottom */}
+      <div
+        className={`bg-white rounded-t-xl sm:rounded-xl p-4 sm:p-6 w-full h-[85vh] sm:h-auto max-w-md shadow-2xl overflow-auto transform transition-transform duration-300 ease-out ${
+          mounted ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold">
             {editingId ? "Edit Transaksi" : "Tambah Transaksi"} -{" "}
             {selectedDate && format(selectedDate, "dd MMM yyyy")}
           </h3>
-          <button onClick={() => setShowModal(false)}>
+          <button
+            onClick={() => {
+              // immediate close (no exit animation). If you want exit animation,
+              // implement local closing state and delay setShowModal(false).
+              setShowModal(false);
+            }}
+          >
             <X size={20} />
           </button>
         </div>
@@ -157,6 +182,7 @@ export default function TransactionModal({
               <option>Gaji</option>
               <option>Hiburan</option>
               <option>Tagihan</option>
+              <option>Lainya</option>
             </select>
           </div>
 
@@ -171,6 +197,13 @@ export default function TransactionModal({
         {/* daftar budgeting / transaksi */}
         <div className="mt-6">
           <h4 className="text-sm font-semibold mb-2">Daftar Budgeting</h4>
+          <h4
+            className={`text-md font-semibold mb-2 ${
+              total > 0 ? "text-green-700" : "text-red-700"
+            } `}
+          >
+            Rp {Math.abs(total).toLocaleString("id-ID")}
+          </h4>
           {filtered.length === 0 ? (
             <div className="text-sm text-gray-500">
               Belum ada transaksi untuk tanggal ini.
@@ -187,8 +220,7 @@ export default function TransactionModal({
                       {(t as any).title ?? t.category}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {t.category} •{" "}
-                      {format(new Date(t.date), "dd MMM yyyy HH:mm")}
+                      {t.category} • {format(new Date(t.date), "dd MMM yyyy HH:mm")}
                     </div>
                   </div>
 

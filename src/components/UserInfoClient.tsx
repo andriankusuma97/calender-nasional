@@ -66,7 +66,7 @@ export default function UserInfoClient({ transactions = [] }: Props) {
                 : <Camera size={16} />}
             </div>
           )}
-          <span className="hidden sm:inline-block text-sm font-medium text-gray-700">
+          <span className="sm:inline-block text-sm font-medium text-gray-700">
             {profile.name ? profile.name : "Pengguna"}
           </span>
         </button>

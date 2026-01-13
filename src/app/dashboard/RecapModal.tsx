@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo,useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { isSameMonth, format } from "date-fns";
 
@@ -21,6 +21,14 @@ interface Props {
 
 export default function RecapModal({ open, onClose, transactions, currentMonth }: Props) {
   if (!open) return null;
+
+   // local mounted state to trigger slide-up animation on mount
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+      // small timeout ensures transition runs after mount
+      const t = setTimeout(() => setMounted(true), 10);
+      return () => clearTimeout(t);
+    }, []);
 
   const monthTransactions = useMemo(
     () => transactions.filter((t) => isSameMonth(new Date(t.date), currentMonth)),
@@ -54,7 +62,9 @@ export default function RecapModal({ open, onClose, transactions, currentMonth }
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40">
-      <div className="w-full max-w-lg bg-white rounded-t-xl sm:rounded-xl p-4 sm:p-6 shadow-xl">
+      <div className={`w-full max-w-lg bg-white rounded-t-xl sm:rounded-xl p-4 sm:p-6 shadow-xl overflow-auto transform transition-transform duration-300 ease-out ${
+          mounted ? "translate-y-0" : "translate-y-full"
+        }`}>
         <div className="flex items-start justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold">Rekap Bulanan</h3>

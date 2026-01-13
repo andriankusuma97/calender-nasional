@@ -17,7 +17,7 @@ interface Props {
   currentMonth: Date;
 }
 
-export default function TransactionListSidebar({ transactions, currentMonth }: Props) {
+export default function TransactionListSidebar({ transactions = [], currentMonth }: Props) {
   const [openRecap, setOpenRecap] = useState(false);
 
   const monthTransactions = useMemo(
@@ -27,20 +27,22 @@ export default function TransactionListSidebar({ transactions, currentMonth }: P
 
   const monthTotal = monthTransactions.reduce((acc, t) => acc + t.amount, 0);
 
-  const grouped = monthTransactions.reduce<Record<string, Transaction[]>>((acc, t) => {
-    const key = format(new Date(t.date), "yyyy-MM-dd");
-    acc[key] = acc[key] || [];
-    acc[key].push(t);
-    return acc;
-  }, {});
+  const grouped = useMemo(() => {
+    return monthTransactions.reduce<Record<string, Transaction[]>>((acc, t) => {
+      const key = format(new Date(t.date), "yyyy-MM-dd");
+      acc[key] = acc[key] || [];
+      acc[key].push(t);
+      return acc;
+    }, {});
+  }, [monthTransactions]);
 
-  const sortedDates = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
+  const sortedDates = useMemo(() => Object.keys(grouped).sort((a, b) => a.localeCompare(b)), [grouped]);
 
   return (
     <aside className="w-full border-l pl-4">
       <div className="sticky top-4 bg-white pb-4">
         <h3 className="text-md font-semibold mb-1">{format(currentMonth, "MMMM yyyy")}</h3>
-        <div className="text-xl font-bold text-gray-700 mb-3">
+        <div className="text-sm font-bold text-gray-700 mb-3">
           Total: <span className={monthTotal >= 0 ? "text-green-700" : "text-red-700"}>Rp {Math.abs(monthTotal).toLocaleString("id-ID")}</span>
         </div>
 
